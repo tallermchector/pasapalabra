@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  letter      String
+  definition  String
+  answer      String
+  category    String?
+  difficulty  String   @default("medium")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  roscoQuestions RoscoQuestion[]
+  
+  @@map("questions")
+}
+
+model Rosco {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  difficulty  String   @default("medium")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  questions   RoscoQuestion[]
+  gameResults GameResult[]
+  
+  @@map("roscos")
+}
+
+model RoscoQuestion {
+  id         String @id @default(cuid())
+  roscoId    String
+  questionId String
+  position   Int    // A=1, B=2, etc.
+  
+  // Relations
+  rosco    Rosco    @relation(fields: [roscoId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  @@unique([roscoId, position])
+  @@map("rosco_questions")
+}
+
+model GameResult {
+  id           String   @id @default(cuid())
+  playerName   String
+  roscoId      String
+  score        Int      // Number of correct answers
+  timeElapsed  Int      // Time in seconds
+  completedAt  DateTime @default(now())
+  
+  // Relations
+  rosco Rosco @relation(fields: [roscoId], references: [id])
+  
+  @@map("game_results")
+}
