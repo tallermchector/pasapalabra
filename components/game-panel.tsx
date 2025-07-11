@@ -173,7 +173,7 @@ export function GamePanel({
               </p>
               <p>
                 La respuesta debe comenzar por la letra <strong>{gameState.currentLetter}</strong>. 
-                Puedes usar el botón "Pasar" si no conoces la respuesta.
+                Puedes usar el botón "Pasar\" si no conoces la respuesta.
               </p>
             </div>
           </CardContent>
